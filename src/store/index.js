@@ -15,12 +15,17 @@ const getters = {}; */
 //引入模块化的vuex
 import home from "./home";
 import search from "./search";
-
+import detail from "./detail";
+import shopCart from "./shopCart";
+import user from "./user";
 //对外暴露store类的一个实例对象
 export default new Vuex.Store({
   //实现Vuex仓库模块化开发
   modules: {
     home,
     search,
+    detail,
+    shopCart,
+    user,
   },
 });

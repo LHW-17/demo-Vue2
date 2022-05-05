@@ -1,7 +1,9 @@
 //vuex模块化：home模块
-import { reqCategoryList } from "@/api";
+import { reqCategoryList, reqGetBannerList, reqFloorList } from "@/api";
 const state = {
   categoryList: [], //初始值,根据服务器返回数据类型设定类型
+  bannerList: [],
+  floorList: [],
 };
 const actions = {
   //通过api里的接口函数，向服务器发请求获取数据
@@ -13,11 +15,33 @@ const actions = {
       commit("CATEGORYLIST", result.data);
     }
   },
+  //mock请求 获取banner数据
+  async getBannerList({ commit }) {
+    let result = await reqGetBannerList();
+    if (result.code == 200) {
+      //console.log(result);
+      commit("GETBANNERLIST", result.data);
+    }
+  },
+  //mock请求 获取floor数据
+  async getFloorList({ commit }) {
+    let result = await reqFloorList();
+    if (result.code == 200) {
+      commit("GETFLOORLIST", result.data);
+    }
+  },
 };
 const mutations = {
   CATEGORYLIST(state, categoryList) {
     categoryList.pop();
     state.categoryList = categoryList;
+  },
+  GETBANNERLIST(state, bannerList) {
+    state.bannerList = bannerList;
+  },
+  GETFLOORLIST(state, floorList) {
+    state.floorList = floorList;
+    //console.log(state.floorList);
   },
 };
 const getters = {};

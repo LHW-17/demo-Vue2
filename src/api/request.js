@@ -1,4 +1,5 @@
 //对axios进行二次封装
+import store from "@/store";
 import axios from "axios";
 //引入进度条
 import nprogress from "nprogress";
@@ -12,10 +13,16 @@ const requests = axios.create({
   //代表请求超时时间ms
   timeout: 5000,
 });
-//请求拦截器：在发请求前，拦截器可以检测到并在请求发出前进行处理
+//请求拦截器：在发请求前，拦截器可以检测到并在请求发出前进行处理,如设置请求头
 requests.interceptors.request.use((config) => {
   //config配置对象，包含header请求头
-
+  if (localStorage.getItem("UUIDTOKEN")) {
+    config.headers.userTempId = localStorage.getItem("UUIDTOKEN");
+  }
+  //需要携带token给服务器
+  if (store.state.user.token) {
+    config.headers.token = store.state.user.token;
+  }
   //进度条启动
   nprogress.start();
   return config;

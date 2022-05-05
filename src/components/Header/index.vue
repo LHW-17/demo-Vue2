@@ -5,13 +5,18 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <p v-if="!userName">
             <span>请</span>
             <!-- 用声明式路由导航替换a标签 -->
             <router-link to="/login">登录</router-link>
             <!-- <a href="###">登录</a> -->
             <!-- <a href="###" class="register">免费注册</a> -->
             <router-link to="/register" class="register">免费注册</router-link>
+          </p>
+          <!-- 登录时的 -->
+          <p v-else>
+            <a>{{ userName }}</a>
+            <a class="register" @click="logout">退出登录</a>
           </p>
         </div>
         <div class="typeList">
@@ -65,9 +70,39 @@ export default {
   methods: {
     //搜索按钮的回调函数，向search路由跳转
     goSearch() {
-      //路由传参
-      this.$router.push("/search/?keyword=" + this.keyword);
+      //路由传参，query参数,同时要带上现有参数
+      this.$router.push({
+        name: "search",
+        query: {
+          ...this.$route.query,
+          keyword: this.keyword,
+        },
+      });
     },
+    //退出登录 通知服务器，清除项目中的一些数据，userInfo和token
+    async logout() {
+      try {
+        this.$store.dispatch("userLogout");
+        //回到首页
+        this.$router.push("/home");
+      } catch (error) {
+        alert(error.message);
+      }
+    },
+  },
+  computed: {
+    //用户名
+    userName() {
+      return this.$store.state.user.userInfo.loginName;
+    },
+  },
+  mounted() {
+    //通过全局事件总线清除关键字
+    this.$bus.$on("clear", () => {
+      this.keyword = "";
+    });
+    //获取用户信息在首页展示
+    // this.$store.dispatch("getUserInfo");
   },
 };
 </script>
