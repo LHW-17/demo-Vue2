@@ -92,8 +92,9 @@ export default {
         phone &&
           password &&
           (await this.$store.dispatch("userLogin", { phone, password }));
-        //登录成功，路由跳转到home首页
-        this.$router.push("/home");
+        //登录成功，若路由中有query参数，跳转到query参数指定的地址，没有则跳转到home
+        let toPath = this.$route.query.redirect || "/home";
+        this.$router.push(toPath);
       } catch (error) {
         alert(error.message);
       }

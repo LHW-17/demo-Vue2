@@ -46,8 +46,8 @@ router.beforeEach(async (to, from, next) => {
   let token = store.state.user.token;
   let name = store.state.user.userInfo.name;
   if (token) {
-    //已经登录了，不能再去login
-    if (to.path == "/login") {
+    //已经登录了，不能再去login和register
+    if (to.path == "/login" || to.path == "/register") {
       next("/home");
     }
     //已登录去其他组件
@@ -68,8 +68,17 @@ router.beforeEach(async (to, from, next) => {
       }
     }
   } else {
-    //未登录
-    next();
+    //未登录 不能去结算页，支付页，支付成功页，个人中心等跳转到登录页
+    if (
+      to.path.indexOf("/trade") != -1 ||
+      to.path.indexOf("/pay") != -1 ||
+      to.path.indexOf("/center") != -1
+    ) {
+      //把未登录时候想去而不能去的地址作为query参数保存
+      next("/login?redirect=" + to.path);
+    } else {
+      next();
+    }
   }
 });
 
